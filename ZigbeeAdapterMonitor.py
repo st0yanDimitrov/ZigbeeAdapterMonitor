@@ -16,7 +16,7 @@ def getConfig(configFilePath):
         config.logPath = configJson["logPath"]
         config.searchString = configJson["searchString"]
         config.gpioOutputNumber = configJson["gpioOutputNumber"]
-        return config
+    return config
 
 def configureGpioOutoput(gpioOutputNumber = int):
     gpio.setmode(gpio.BCM)
