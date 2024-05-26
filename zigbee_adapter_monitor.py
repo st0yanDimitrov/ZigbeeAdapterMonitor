@@ -3,8 +3,6 @@ import RPi.GPIO as gpio
 import time
 import json
 
-import z2m_log_parser.z2m_log_parser
-
 class Config():
     def __init__(self):
         self.log_path = str
