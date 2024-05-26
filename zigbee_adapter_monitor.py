@@ -2,12 +2,18 @@ from z2m_log_parser import z2m_log_parser as parser
 import RPi.GPIO as gpio
 import time
 import json
+import logging
+
 
 class Config():
     def __init__(self):
         self.log_path = str
         self.search_string = str
         self.gpio_output_number = int
+
+def setup_logging(logger_name = str, log_file_name = str, file_encoding = str, log_level = str):
+    logger = logging.getLogger(logger_name)
+    logging.basicConfig(filename=log_file_name, encoding=file_encoding, level=log_level)
 
 def get_config(config_file_path):
     config = Config()
@@ -27,14 +33,23 @@ def reset_adapter(gpio_output_number = int):
     gpio.output(gpio_output_number, gpio.LOW)
     time.sleep(2)
     gpio.output(gpio_output_number, gpio.HIGH)
+    time.sleep(2)
 
 def main():
+    setup_logging(logger_name = "main", log_file_name = "log.txt", file_encoding = "UTF-8", log_level = logging.DEBUG)
+    logger = logging.getLogger("main")
+    logger.info("Execution started")
     config = get_config("./config.json")
     log_entries = parser.parse_latest_logs(config.log_path)
     log_entries = [x for x in log_entries if config.search_string in x.data.message]
     if any(log_entries):
+        logger.warning("Search string found in logs. Powering off the adapter...")
         reset_adapter(config.gpio_output_number)
-    time.sleep(10)
+        logger.info("Power to the adapter restored.")
+    else:
+        logger.info("Search string not found in logs.")
+    time.sleep(2)
+    logger.info("Execution ended")
 
 if __name__ == "__main__":
     main()
