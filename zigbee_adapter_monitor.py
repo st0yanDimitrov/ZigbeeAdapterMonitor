@@ -1,4 +1,4 @@
-from z2m_log_parser import z2m_log_parser as parser
+from z2m_log_parser import z2m_log_parser
 import RPi.GPIO as gpio
 import time
 import json
@@ -47,8 +47,8 @@ def main():
     logger = setup_logging("")
     logger.info("Execution started.")
     config = get_config("config.json")
-    log_entries = parser.parse_latest_logs(config.log_path)
-    log_entries = [x for x in log_entries if config.search_string in x.data.message]
+    parser = z2m_log_parser.Z2mLogParser()
+    parser = [x for x in log_entries if config.search_string in x.data.message]
     if any(log_entries):
         logger.warning("Search string found in logs. Powering off the adapter.")
         reset_adapter(config.gpio_output_number)
