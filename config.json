@@ -1,5 +1,5 @@
 {
-    "logPath": "",
-    "searchString": "",
-    "gpioOutputNumber": 0
+    "log_path": "",
+    "search_string": "",
+    "gpio_output_number": 0
 }
