@@ -12,7 +12,7 @@ class Config():
         self.gpio_output_number = int
 
 def setup_logging():
-    logging.basicConfig(filename="log.txt",
+    logging.basicConfig(filename="./log.txt",
                     filemode='a',
                     encoding="UTF-8",
                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
