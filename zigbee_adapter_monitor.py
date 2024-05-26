@@ -48,7 +48,7 @@ def main():
     logger.info("Execution started.")
     config = get_config("config.json")
     parser = z2m_log_parser.Z2mLogParser()
-    log_entries = parser.parse_latest_logs()
+    log_entries = parser.parse_latest_logs(config.log_path)
     log_entries = [x for x in log_entries if config.search_string in x.data.message]
     if any(log_entries):
         logger.warning("Search string found in logs. Powering off the adapter.")
