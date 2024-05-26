@@ -11,9 +11,13 @@ class Config():
         self.search_string = str
         self.gpio_output_number = int
 
-def setup_logging(logger_name = str, log_file_name = str, file_encoding = str, log_level = str):
-    logger = logging.getLogger(logger_name)
-    logging.basicConfig(filename=log_file_name, encoding=file_encoding, level=log_level)
+def setup_logging():
+    logging.basicConfig(filename="log.txt",
+                    filemode='a',
+                    encoding="UTF-8",
+                    format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                    datefmt='%H:%M:%S',
+                    log_level=logging.DEBUG)
 
 def get_config(config_file_path):
     config = Config()
@@ -36,8 +40,8 @@ def reset_adapter(gpio_output_number = int):
     time.sleep(2)
 
 def main():
-    setup_logging(logger_name = "main", log_file_name = "log.txt", file_encoding = "UTF-8", log_level = logging.DEBUG)
-    logger = logging.getLogger("main")
+    setup_logging()
+    logger = logging.getLogger("")
     logger.info("Execution started")
     config = get_config("./config.json")
     log_entries = parser.parse_latest_logs(config.log_path)
