@@ -42,18 +42,18 @@ def reset_adapter(gpio_output_number = int):
 def main():
     setup_logging()
     logger = logging.getLogger("")
-    logger.info("Execution started")
+    logger.info("Execution started.")
     config = get_config("./config.json")
     log_entries = parser.parse_latest_logs(config.log_path)
     log_entries = [x for x in log_entries if config.search_string in x.data.message]
     if any(log_entries):
-        logger.warning("Search string found in logs. Powering off the adapter...")
+        logger.warning("Search string found in logs. Powering off the adapter.")
         reset_adapter(config.gpio_output_number)
         logger.info("Power to the adapter restored.")
     else:
         logger.info("Search string not found in logs.")
     time.sleep(2)
-    logger.info("Execution ended")
+    logger.info("Execution ended.")
 
 if __name__ == "__main__":
     main()
