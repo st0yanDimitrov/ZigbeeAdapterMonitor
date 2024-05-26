@@ -4,7 +4,6 @@ import time
 import json
 import logging
 import os
-import sys
 
 
 class Config():
@@ -14,7 +13,7 @@ class Config():
         self.gpio_output_number = int
 
 def setup_logging():
-    execution_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    execution_path = os.path.dirname(os.path.realpath(__file__))
     logging.basicConfig(filename=execution_path + "/log.txt",
                     filemode='a',
                     encoding="UTF-8",
@@ -24,7 +23,7 @@ def setup_logging():
 
 def get_config(config_file_name):
     config = Config()
-    execution_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    execution_path = os.path.dirname(os.path.realpath(__file__))
     with open(execution_path+"/"+config_file_name, 'r') as config_file:
         config_json = json.load(config_file)
         config.log_path = config_json["log_path"]
