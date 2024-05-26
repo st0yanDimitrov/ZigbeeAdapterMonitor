@@ -17,7 +17,7 @@ def setup_logging():
                     encoding="UTF-8",
                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
                     datefmt='%H:%M:%S',
-                    log_level=logging.DEBUG)
+                    level=logging.DEBUG)
 
 def get_config(config_file_path):
     config = Config()
