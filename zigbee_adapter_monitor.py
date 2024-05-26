@@ -3,6 +3,8 @@ import RPi.GPIO as gpio
 import time
 import json
 import logging
+import os
+import sys
 
 
 class Config():
@@ -19,9 +21,10 @@ def setup_logging():
                     datefmt='%H:%M:%S',
                     level=logging.DEBUG)
 
-def get_config(config_file_path):
+def get_config(config_file_name):
     config = Config()
-    with open(config_file_path, 'r') as config_file:
+    execution_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    with open(execution_path+"/"+config_file_name, 'r') as config_file:
         config_json = json.load(config_file)
         config.log_path = config_json["log_path"]
         config.search_string = config_json["search_string"]
@@ -43,7 +46,7 @@ def main():
     setup_logging()
     logger = logging.getLogger("")
     logger.info("Execution started.")
-    config = get_config("./config.json")
+    config = get_config("config.json")
     log_entries = parser.parse_latest_logs(config.log_path)
     log_entries = [x for x in log_entries if config.search_string in x.data.message]
     if any(log_entries):
