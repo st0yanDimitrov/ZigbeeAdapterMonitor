@@ -48,7 +48,8 @@ def main():
     logger.info("Execution started.")
     config = get_config("config.json")
     parser = z2m_log_parser.Z2mLogParser()
-    parser = [x for x in log_entries if config.search_string in x.data.message]
+    log_entries = parser.parse_latest_logs
+    log_entries = [x for x in log_entries if config.search_string in x.data.message]
     if any(log_entries):
         logger.warning("Search string found in logs. Powering off the adapter.")
         reset_adapter(config.gpio_output_number)
