@@ -14,7 +14,8 @@ class Config():
         self.gpio_output_number = int
 
 def setup_logging():
-    logging.basicConfig(filename="./log.txt",
+    execution_path = os.path.dirname(os.path.realpath(sys.argv[0]))
+    logging.basicConfig(filename=execution_path + "/log.txt",
                     filemode='a',
                     encoding="UTF-8",
                     format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
