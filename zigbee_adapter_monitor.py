@@ -1,5 +1,5 @@
 import z2m_log_parser
-import RPi.GPIO as gpio
+import RPi.GPIO
 import time
 import json
 import logging
@@ -29,7 +29,7 @@ class ZigbeeAdapterMonitor:
                         level=logging.DEBUG)
         return logging.getLogger(logger_name)
 
-    def __configure_gpio_output(self, gpio_output_number: int):
+    def __configure_gpio_output(self, gpio_output_number: int, gpio: RPi.GPIO):
         gpio.setmode(gpio.BCM)
         gpio.setup(gpio_output_number, gpio.OUT)
 
@@ -52,8 +52,8 @@ class ZigbeeAdapterMonitor:
     def log_error(self, message: str):
         self.logger.error(message)
 
-    def reset_adapter(self):
-        self.__configure_gpio_output(self.config.gpio_output_number)
+    def reset_adapter(self, gpio: RPi.GPIO):
+        self.__configure_gpio_output(self.config.gpio_output_number, gpio)
         gpio.output(self.config.gpio_output_number, gpio.LOW)
         time.sleep(2)
         gpio.output(self.config.gpio_output_number, gpio.HIGH)
@@ -72,10 +72,11 @@ class ZigbeeAdapterMonitor:
 def main():
     monitor = ZigbeeAdapterMonitor()
     monitor.log_info("Execution started.")
-    
+    gpio = RPi.GPIO
+
     if monitor.check_if_string_in_log():
         monitor.log_warning("Search string found in logs. Powering off the adapter.")
-        monitor.reset_adapter()
+        monitor.reset_adapter(gpio)
         monitor.log_info("Power to the adapter restored.")
     else:
         monitor.log_info("Search string not found in logs.")
