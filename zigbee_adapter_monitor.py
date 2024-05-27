@@ -8,11 +8,11 @@ import os
 
 class Config():
     def __init__(self):
-        self.log_path = str
-        self.search_string = str
-        self.gpio_output_number = int
+        self.log_path: str = str
+        self.search_string: str = str
+        self.gpio_output_number: int = int
 
-def setup_logging(logger_name = str):
+def setup_logging(logger_name:str) -> logging.Logger:
     execution_path = os.path.dirname(os.path.realpath(__file__))
     logging.basicConfig(filename=execution_path + "/log.txt",
                     filemode='a',
@@ -22,7 +22,7 @@ def setup_logging(logger_name = str):
                     level=logging.DEBUG)
     return logging.getLogger(logger_name)
 
-def get_config(config_file_name):
+def get_config(config_file_name: str) -> Config:
     config = Config()
     execution_path = os.path.dirname(os.path.realpath(__file__))
     with open(execution_path+"/"+config_file_name, 'r') as config_file:
@@ -32,11 +32,11 @@ def get_config(config_file_name):
         config.gpio_output_number = config_json["gpio_output_number"]
     return config
 
-def configure_gpio_output(gpio_output_number = int):
+def configure_gpio_output(gpio_output_number: int):
     gpio.setmode(gpio.BCM)
     gpio.setup(gpio_output_number, gpio.OUT)
 
-def reset_adapter(gpio_output_number = int):
+def reset_adapter(gpio_output_number: int):
     configure_gpio_output(gpio_output_number)
     gpio.output(gpio_output_number, gpio.LOW)
     time.sleep(2)
