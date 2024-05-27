@@ -25,8 +25,11 @@ The script is configured via the config.json file with the parameters as follows
 
 
 log_path [str] - full path to the log file under monitoring
+
 search_string [str] - message under which presence the adapter must be reset
+
 gpio_output_number [int]- number of the Raspberry Pi GPIO pin where the Enable pin of the DC-DC converter is connected
+
 
 **Note:**
 
