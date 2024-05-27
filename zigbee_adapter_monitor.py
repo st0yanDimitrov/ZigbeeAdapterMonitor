@@ -18,6 +18,7 @@ class ZigbeeAdapterMonitor:
     def __init__(self):
         self.execution_path = os.path.dirname(os.path.realpath(__file__))
         self.logger = self.setup_logging("")
+        self.config = self.get_config("config.json")
 
     def setup_logging(sel, logger_name:str) -> logging.Logger:
         execution_path = os.path.dirname(os.path.realpath(__file__))
@@ -52,24 +53,30 @@ class ZigbeeAdapterMonitor:
         gpio.setmode(gpio.BCM)
         gpio.setup(gpio_output_number, gpio.OUT)
 
-    def reset_adapter(self, gpio_output_number: int):
-        self.configure_gpio_output(gpio_output_number)
-        gpio.output(gpio_output_number, gpio.LOW)
+    def reset_adapter(self):
+        self.configure_gpio_output(self.config.gpio_output_number)
+        gpio.output(self.config.gpio_output_number, gpio.LOW)
         time.sleep(2)
-        gpio.output(gpio_output_number, gpio.HIGH)
+        gpio.output(self.config.gpio_output_number, gpio.HIGH)
         time.sleep(2)
+
+    def check_if_string_in_log(self) -> bool:
+        parser = z2m_log_parser.Z2mLogParser(self.execution_path)
+        log_entries = parser.parse_latest_logs(self.config.log_path)
+        log_entries = [x for x in log_entries if self.config.search_string in x.data.message]
+        if any(log_entries):
+            return True
+        else:
+            return False
+
 
 def main():
     monitor = ZigbeeAdapterMonitor()
     monitor.log_info("Execution started.")
-    config = monitor.get_config("config.json")
-    execution_path = os.path.dirname(os.path.realpath(__file__))
-    parser = z2m_log_parser.Z2mLogParser(execution_path)
-    log_entries = parser.parse_latest_logs(config.log_path)
-    log_entries = [x for x in log_entries if config.search_string in x.data.message]
-    if any(log_entries):
+    
+    if monitor.check_if_string_in_log():
         monitor.log_warning("Search string found in logs. Powering off the adapter.")
-        monitor.reset_adapter(config.gpio_output_number)
+        monitor.reset_adapter()
         monitor.log_info("Power to the adapter restored.")
     else:
         monitor.log_info("Search string not found in logs.")
