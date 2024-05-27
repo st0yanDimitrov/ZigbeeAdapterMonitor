@@ -17,10 +17,10 @@ class ZigbeeAdapterMonitor:
 
     def __init__(self):
         self.execution_path: str = os.path.dirname(os.path.realpath(__file__))
-        self.logger: logging.Logger = self.setup_logging("")
-        self.config: Config = self.get_config("config.json")
+        self.logger: logging.Logger = self.__setup_logging("")
+        self.config: Config = self.__get_config("config.json")
 
-    def setup_logging(sel, logger_name:str) -> logging.Logger:
+    def __setup_logging(sel, logger_name:str) -> logging.Logger:
         execution_path = os.path.dirname(os.path.realpath(__file__))
         logging.basicConfig(filename=execution_path + "/log.txt",
                         filemode='a',
@@ -30,16 +30,16 @@ class ZigbeeAdapterMonitor:
                         level=logging.DEBUG)
         return logging.getLogger(logger_name)
     
-    def log_info(self, message: str):
+    def __log_info(self, message: str):
         self.logger.info(message)
 
-    def log_warning(self, message: str):
+    def __log_warning(self, message: str):
         self.logger.warn(message)
     
-    def log_error(self, message: str):
+    def __log_error(self, message: str):
         self.logger.error(message)
 
-    def get_config(self, config_file_name: str) -> Config:
+    def __get_config(self, config_file_name: str) -> Config:
         config = Config()
         execution_path = os.path.dirname(os.path.realpath(__file__))
         with open(execution_path+"/"+config_file_name, 'r') as config_file:
@@ -49,18 +49,18 @@ class ZigbeeAdapterMonitor:
             config.gpio_output_number = config_json["gpio_output_number"]
         return config
 
-    def configure_gpio_output(self, gpio_output_number: int):
+    def __configure_gpio_output(self, gpio_output_number: int):
         gpio.setmode(gpio.BCM)
         gpio.setup(gpio_output_number, gpio.OUT)
 
-    def reset_adapter(self):
-        self.configure_gpio_output(self.config.gpio_output_number)
+    def __reset_adapter(self):
+        self.__configure_gpio_output(self.config.gpio_output_number)
         gpio.output(self.config.gpio_output_number, gpio.LOW)
         time.sleep(2)
         gpio.output(self.config.gpio_output_number, gpio.HIGH)
         time.sleep(2)
 
-    def check_if_string_in_log(self) -> bool:
+    def __check_if_string_in_log(self) -> bool:
         parser = z2m_log_parser.Z2mLogParser(self.execution_path)
         log_entries = parser.parse_latest_logs(self.config.log_path)
         log_entries = [x for x in log_entries if self.config.search_string in x.data.message]
@@ -72,16 +72,16 @@ class ZigbeeAdapterMonitor:
 
 def main():
     monitor = ZigbeeAdapterMonitor()
-    monitor.log_info("Execution started.")
+    monitor.__log_info("Execution started.")
     
-    if monitor.check_if_string_in_log():
-        monitor.log_warning("Search string found in logs. Powering off the adapter.")
-        monitor.reset_adapter()
-        monitor.log_info("Power to the adapter restored.")
+    if monitor.__check_if_string_in_log():
+        monitor.__log_warning("Search string found in logs. Powering off the adapter.")
+        monitor.__reset_adapter()
+        monitor.__log_info("Power to the adapter restored.")
     else:
-        monitor.log_info("Search string not found in logs.")
+        monitor.__log_info("Search string not found in logs.")
     time.sleep(2)
-    monitor.log_info("Execution ended.")
+    monitor.__log_info("Execution ended.")
 
 if __name__ == "__main__":
     main()
