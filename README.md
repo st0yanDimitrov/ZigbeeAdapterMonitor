@@ -2,7 +2,7 @@
 
 Used to monitor Zigbee2Mqtt log for speciffic message and perform power cycle resed via changing a state of a configured GPIO pin
   
-Setup:
+*Setup:*
 
 [Raspberry Pi B] +5V    ->   IN  [DC-DC 5v-3.3v converter] OUT     ->  +3.3V [cc2530 + cc2591 Zigbee adapter]
 
