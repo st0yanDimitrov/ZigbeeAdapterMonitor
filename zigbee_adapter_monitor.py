@@ -12,7 +12,6 @@ class Config():
         self.search_string: str = str
         self.gpio_output_number: int = int
 
-
 class ZigbeeAdapterMonitor:
 
     def __init__(self):
@@ -29,15 +28,10 @@ class ZigbeeAdapterMonitor:
                         datefmt='%H:%M:%S',
                         level=logging.DEBUG)
         return logging.getLogger(logger_name)
-    
-    def __log_info(self, message: str):
-        self.logger.info(message)
 
-    def __log_warning(self, message: str):
-        self.logger.warn(message)
-    
-    def __log_error(self, message: str):
-        self.logger.error(message)
+    def __configure_gpio_output(self, gpio_output_number: int):
+        gpio.setmode(gpio.BCM)
+        gpio.setup(gpio_output_number, gpio.OUT)
 
     def __get_config(self, config_file_name: str) -> Config:
         config = Config()
@@ -49,18 +43,23 @@ class ZigbeeAdapterMonitor:
             config.gpio_output_number = config_json["gpio_output_number"]
         return config
 
-    def __configure_gpio_output(self, gpio_output_number: int):
-        gpio.setmode(gpio.BCM)
-        gpio.setup(gpio_output_number, gpio.OUT)
+    def log_info(self, message: str):
+        self.logger.info(message)
 
-    def __reset_adapter(self):
+    def log_warning(self, message: str):
+        self.logger.warn(message)
+    
+    def log_error(self, message: str):
+        self.logger.error(message)
+
+    def reset_adapter(self):
         self.__configure_gpio_output(self.config.gpio_output_number)
         gpio.output(self.config.gpio_output_number, gpio.LOW)
         time.sleep(2)
         gpio.output(self.config.gpio_output_number, gpio.HIGH)
         time.sleep(2)
 
-    def __check_if_string_in_log(self) -> bool:
+    def check_if_string_in_log(self) -> bool:
         parser = z2m_log_parser.Z2mLogParser(self.execution_path)
         log_entries = parser.parse_latest_logs(self.config.log_path)
         log_entries = [x for x in log_entries if self.config.search_string in x.data.message]
@@ -74,14 +73,14 @@ def main():
     monitor = ZigbeeAdapterMonitor()
     monitor.__log_info("Execution started.")
     
-    if monitor.__check_if_string_in_log():
-        monitor.__log_warning("Search string found in logs. Powering off the adapter.")
-        monitor.__reset_adapter()
-        monitor.__log_info("Power to the adapter restored.")
+    if monitor.check_if_string_in_log():
+        monitor.log_warning("Search string found in logs. Powering off the adapter.")
+        monitor.reset_adapter()
+        monitor.log_info("Power to the adapter restored.")
     else:
-        monitor.__log_info("Search string not found in logs.")
+        monitor.log_info("Search string not found in logs.")
     time.sleep(2)
-    monitor.__log_info("Execution ended.")
+    monitor.log_info("Execution ended.")
 
 if __name__ == "__main__":
     main()
