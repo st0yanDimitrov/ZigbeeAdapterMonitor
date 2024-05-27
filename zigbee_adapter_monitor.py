@@ -47,7 +47,8 @@ def main():
     logger = setup_logging("")
     logger.info("Execution started.")
     config = get_config("config.json")
-    parser = z2m_log_parser.Z2mLogParser()
+    execution_path = os.path.dirname(os.path.realpath(__file__))
+    parser = z2m_log_parser.Z2mLogParser(execution_path)
     log_entries = parser.parse_latest_logs(config.log_path)
     log_entries = [x for x in log_entries if config.search_string in x.data.message]
     if any(log_entries):
