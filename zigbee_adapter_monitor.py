@@ -16,9 +16,9 @@ class Config():
 class ZigbeeAdapterMonitor:
 
     def __init__(self):
-        self.execution_path = os.path.dirname(os.path.realpath(__file__))
-        self.logger = self.setup_logging("")
-        self.config = self.get_config("config.json")
+        self.execution_path: str = os.path.dirname(os.path.realpath(__file__))
+        self.logger: logging.Logger = self.setup_logging("")
+        self.config: Config = self.get_config("config.json")
 
     def setup_logging(sel, logger_name:str) -> logging.Logger:
         execution_path = os.path.dirname(os.path.realpath(__file__))
