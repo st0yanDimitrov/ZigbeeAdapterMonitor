@@ -71,7 +71,7 @@ class ZigbeeAdapterMonitor:
 
 def main():
     monitor = ZigbeeAdapterMonitor()
-    monitor.__log_info("Execution started.")
+    monitor.log_info("Execution started.")
     
     if monitor.check_if_string_in_log():
         monitor.log_warning("Search string found in logs. Powering off the adapter.")
