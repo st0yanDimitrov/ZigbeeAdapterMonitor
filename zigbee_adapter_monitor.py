@@ -1,4 +1,4 @@
-from z2m_log_parser import z2m_log_parser
+import z2m_log_parser
 import RPi.GPIO as gpio
 import time
 import json
