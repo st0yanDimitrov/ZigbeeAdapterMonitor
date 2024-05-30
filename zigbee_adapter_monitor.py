@@ -55,9 +55,9 @@ class ZigbeeAdapterMonitor:
 
     def reset_adapter(self):
         self.__configure_gpio_output(self.config.gpio_output_number)
-        self.gpio.output(self.config.gpio_output_number, self.gpio.LOW)
-        time.sleep(2)
         self.gpio.output(self.config.gpio_output_number, self.gpio.HIGH)
+        time.sleep(2)
+        self.gpio.output(self.config.gpio_output_number, self.gpio.LOW)
         time.sleep(2)
 
     def check_if_string_in_log(self) -> bool:
