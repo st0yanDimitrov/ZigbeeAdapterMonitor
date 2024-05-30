@@ -1,4 +1,4 @@
-import z2m_log_parser
+from z2m_log_parser import *
 import RPi.GPIO
 import time
 import json
@@ -61,7 +61,7 @@ class ZigbeeAdapterMonitor:
         time.sleep(2)
 
     def check_if_string_in_log(self) -> bool:
-        parser = z2m_log_parser.Z2mLogParser()
+        parser = Z2mLogParser()
         log_entries = parser.parse_latest_logs(self.config.log_path)
         log_entries = [x for x in log_entries if self.config.search_string in x.data.message]
         if any(log_entries):
